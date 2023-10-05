@@ -1,19 +1,15 @@
-# vite-react-electron-template
+# FRP Desktop
 
-原项目:
+FRP Desktop 是 [FRP](https://github.com/fatedier/frp) 的 GUI 版本，提供了可视化编辑 FRP Client 的能力。
 
-[electron-vite-react](https://github.com/electron-vite/electron-vite-react)
+![1696478693466](https://github.com/Siykt/frp-desktop/assets/44022526/9b4d2355-d682-4c32-a680-f86a7aeb303c)
 
-## e2e 测试
+## FRP 服务端部署
 
-e2e 测试需要先编译项目
+配置 `frps.init`，参考：[官方文档](https://gofrp.org/docs/examples/vhost-http/)
 
-```bash
-pnpm pree2e
-```
-
-再执行测试
+### 使用 Docker 部署
 
 ```bash
-pnpm e2e
+docker run --restart=always --network host -d -v /etc/frp/frps.ini:/etc/frp/frps.ini --name frps snowdreamtech/frps
 ```
