@@ -1,6 +1,6 @@
 {
   "name": "frp-desktop",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist-electron/main/index.js",
   "description": "Vite React Electron template.",
   "author": "Siykt <cnsiykt@163.com>",
