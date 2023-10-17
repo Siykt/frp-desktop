@@ -1,7 +1,7 @@
 import { FRPClientInitConfig } from '@/modules/FRP/Client';
 import { BrowserWindow, app, ipcMain } from 'electron';
 import ElectronStore from 'electron-store';
-import { ChildProcess, exec } from 'node:child_process';
+import { ChildProcess, spawn } from 'node:child_process';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import { release } from 'node:os';
@@ -135,19 +135,15 @@ ipcMain.handle('run-frp-client', async (_, arg: FRPClientInitConfig) => {
 
   function runFRPClient() {
     // 使用最新的数据
-    cp = exec(`"${eStore.get('frpcPath')}" -c "${eStore.get('frpcIni')}"`, (error, stdout, stderr) => {
-      console.log('frpc', error, stdout, stderr);
-      if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-      }
+    cp = spawn(`${eStore.get('frpcPath')}`, ['-c', `${eStore.get('frpcIni')}`]);
 
-      if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
-      }
+    cp.stderr?.on('error', (err) => {
+      console.error(err);
+    });
 
-      console.log(`stdout: ${stdout}`);
+    cp.stdout?.on('data', (data) => {
+      console.log('frpc ->', data.toString());
+      win?.webContents.send('frpc-stdout', data.toString());
     });
   }
 
@@ -158,8 +154,6 @@ ipcMain.handle('run-frp-client', async (_, arg: FRPClientInitConfig) => {
     // 获取最新版本
     await downloadFRPClient(win, eStore);
     runFRPClient();
-
-    return false;
   }
 
   return true;

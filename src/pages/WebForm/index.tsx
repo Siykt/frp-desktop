@@ -1,15 +1,15 @@
-import { FC, FormEvent, useEffect, useRef, useState } from 'react';
-import * as SC from './styles';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { ipcRenderer, shell } from 'electron';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, StopCircle, Trash2 } from 'lucide-react';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { FRPClientInitConfig } from '@/modules/FRP/Client';
-import { toast } from 'react-toastify';
 import { useRequest } from 'ahooks';
+import { ipcRenderer, shell } from 'electron';
+import { ChevronLeft, StopCircle, Trash2 } from 'lucide-react';
+import { FC, FormEvent, useRef, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as SC from './styles';
 
 function useScroll() {
   // for auto-scroll
@@ -55,13 +55,16 @@ const WebForm: FC = () => {
   const { scrollRef, scrollDomToTop, scrollDomToBottom } = useScroll();
   const [isStart, setIsStart] = useState(false);
 
+  console.log('🍔 - file: index.tsx:58 - isStart ->', isStart);
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'localConfigs',
   });
 
   const { run: handleRunFRPClient, loading } = useRequest(
-    async () => {
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
       await form.handleSubmit(async (values) => {
         if (!values.common.server_addr || !values.common.server_port) {
           toast('请先配置FRP服务器设置', {
