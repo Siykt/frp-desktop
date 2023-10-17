@@ -5,6 +5,9 @@ on: push
 jobs:
   release:
     runs-on: ${{ matrix.os }}
+    env:
+      # publish to GitHub releases
+      GH_TOKEN: ${{ secrets.github_token }}
 
     strategy:
       matrix:
